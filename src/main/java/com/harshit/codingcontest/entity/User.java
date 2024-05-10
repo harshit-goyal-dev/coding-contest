@@ -17,7 +17,7 @@ public class User {
     private String id;
 
    // @NotEmpty
-    private final String userName;
+    private String userName;
 
     private int score;
     private List<Badge> badges;
@@ -28,7 +28,18 @@ public class User {
         this.badges = new ArrayList<Badge>();
     }
 
-    public User(){
+    public User(String id, String userName, int score) {
+        this.id = id;
+        this.userName = userName;
+        this.score = score;
+        addBadgeToBadgeList(score);
+    }
 
+    private void addBadgeToBadgeList(int score){
+        this.badges = new ArrayList<>();
+
+        if(score >0) badges.add(Badge.Code_Ninja);
+        if(score>=30) badges.add(Badge.Code_Champ);
+        if(score>=60) badges.add(Badge.Code_Master);
     }
 }

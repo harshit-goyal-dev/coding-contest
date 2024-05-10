@@ -9,8 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService implements IUserService{
@@ -22,11 +24,11 @@ public class UserService implements IUserService{
     public List<User> findAllUsers() {
         List<User> users = null;
         try{
-            users = userRepository.findAll().stream().sorted()
+            users = userRepository.findAll().stream().sorted(Comparator.comparingInt(User::getScore)).collect(Collectors.toList());
         }catch(Exception exception){
-
+            return null;
         }
-        return null;
+        return users;
     }
 
     @Override
@@ -40,8 +42,11 @@ public class UserService implements IUserService{
     public User updateUserById(UpdateUserRequestDto userDto) {
         String userId = userDto.getId();
         int score = userDto.getScore();
-
-        return null;
+        Optional<User> optional = userRepository.findById(userId);
+        if(!optional.isPresent()) throw new UserNotFoundException("User data not Found");
+        User user = optional.get();
+        User updatedUser = new User(user.getId(), user.getUserName(), score);
+        return userRepository.save((updatedUser));
     }
 
     @Override
@@ -57,11 +62,13 @@ public class UserService implements IUserService{
 
     @Override
     public String deleteUserById(String id) {
-        try{
+       // try{
+            Optional<User> optional = userRepository.findById(id);
+            if(!optional.isPresent()) throw new UserNotFoundException("User data not Found");
+            userRepository.delete(optional.get());
+        //}catch(Exception exception){
 
-        }catch(Exception exception){
-
-        }
-        return null;
+        //}
+        return "User deleted Successfully";
     }
 }
