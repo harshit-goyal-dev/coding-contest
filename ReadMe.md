@@ -1,1 +1,0 @@
-Public postman collection - https://www.postman.com/mission-saganist-78647024/workspace/coding-contest-apis/request/19091992-bb7335b0-71db-4c4d-b286-5cf028c2393a
