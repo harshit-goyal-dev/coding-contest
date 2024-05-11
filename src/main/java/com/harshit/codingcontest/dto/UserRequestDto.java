@@ -1,9 +1,27 @@
 package com.harshit.codingcontest.dto;
 
-import lombok.Data;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 
-@Data
+
 public class UserRequestDto {
 
+    @NotEmpty
+    @Size(min=3)
     private String userName;
+
+    public UserRequestDto() {
+    }
+
+    public UserRequestDto(String userName) {
+        this.userName = userName;
+    }
+
+    public String getUserName(){
+        return this.userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
 }

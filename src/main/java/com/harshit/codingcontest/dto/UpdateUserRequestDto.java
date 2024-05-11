@@ -1,14 +1,21 @@
 package com.harshit.codingcontest.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-
-@Data
-@AllArgsConstructor
 public class UpdateUserRequestDto {
 
-    private String id;
     private int score;
 
+    public UpdateUserRequestDto() {
+    }
 
+    public UpdateUserRequestDto(int score) {
+        this.score = score;
+    }
+
+    public int getScore(){
+        return this.score;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
+    }
 }

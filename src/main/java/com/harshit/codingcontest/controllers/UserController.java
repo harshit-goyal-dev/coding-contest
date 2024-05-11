@@ -5,6 +5,7 @@ import com.harshit.codingcontest.dto.UserRequestDto;
 import com.harshit.codingcontest.entity.User;
 import com.harshit.codingcontest.exceptions.UserNotFoundException;
 import com.harshit.codingcontest.services.IUserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.http.HttpStatusCode;
@@ -16,6 +17,7 @@ import java.util.List;
 import static org.springframework.boot.autoconfigure.security.SecurityProperties.*;
 
 @RestController
+@RequestMapping(UserController.APPLICATION_ENDPOINT)
 public class UserController {
     protected static final String APPLICATION_ENDPOINT = "codingcontest/api/v1";
     private static final String USER_ENDPOINT = "/users";
@@ -31,6 +33,7 @@ public class UserController {
         }catch(Exception exception){
             return ResponseEntity.internalServerError().build();
         }
+        System.out.println(users.get(0).toString());
         return ResponseEntity.ok(users);
     }
     @GetMapping(USER_ENDPOINT+"/{id}")
@@ -52,20 +55,21 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
     @PostMapping(USER_ENDPOINT)
-    public ResponseEntity<User> registerUser(@RequestBody UserRequestDto userRequestDto){
+    public ResponseEntity<User> registerUser(@RequestBody @Valid UserRequestDto userRequestDto){
         User user = null;
         try{
             user = userService.createUser(userRequestDto);
+            System.out.println(user.toString());
         }catch(Exception exception){
             return ResponseEntity.internalServerError().build();
         }
         return ResponseEntity.status(HttpStatusCode.valueOf(201)).body(user);
     }
     @PutMapping(USER_ENDPOINT+"/{id}")
-    public ResponseEntity<User> updateUser(@RequestBody UpdateUserRequestDto userDto){
+    public ResponseEntity<User> updateUser(@PathVariable String id, @RequestBody @Valid UpdateUserRequestDto userDto){
         User user = null;
         try{
-            user = userService.updateUserById(userDto);
+            user = userService.updateUserById(userDto, id);
         }catch(UserNotFoundException exception){
             return ResponseEntity.notFound().build();
         }catch(Exception exception){

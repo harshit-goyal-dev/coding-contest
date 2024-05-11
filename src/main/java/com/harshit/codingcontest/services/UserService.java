@@ -23,11 +23,9 @@ public class UserService implements IUserService{
     @Override
     public List<User> findAllUsers() {
         List<User> users = null;
-        try{
-            users = userRepository.findAll().stream().sorted(Comparator.comparingInt(User::getScore)).collect(Collectors.toList());
-        }catch(Exception exception){
-            return null;
-        }
+        //users = userRepository.findAll().stream().sorted(Comparator.comparingInt(User::getScore)).collect(Collectors.toList());
+        users = userRepository.findAll();
+        System.out.println(users);
         return users;
     }
 
@@ -35,17 +33,18 @@ public class UserService implements IUserService{
     public User findUserById(String id) throws UserNotFoundException{
         Optional<User> optional = userRepository.findById(id);
         if(!optional.isPresent()) throw new UserNotFoundException("User data not Found");
+        System.out.println(optional.get().toString());
         return optional.get();
     }
 
     @Override
-    public User updateUserById(UpdateUserRequestDto userDto) {
-        String userId = userDto.getId();
+    public User updateUserById(UpdateUserRequestDto userDto, String userId) {
         int score = userDto.getScore();
         Optional<User> optional = userRepository.findById(userId);
         if(!optional.isPresent()) throw new UserNotFoundException("User data not Found");
         User user = optional.get();
         User updatedUser = new User(user.getId(), user.getUserName(), score);
+        System.out.println(updatedUser.toString());
         return userRepository.save((updatedUser));
     }
 
