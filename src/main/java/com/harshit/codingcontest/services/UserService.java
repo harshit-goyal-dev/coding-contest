@@ -4,12 +4,11 @@ import com.harshit.codingcontest.dto.UpdateUserRequestDto;
 import com.harshit.codingcontest.dto.UserRequestDto;
 import com.harshit.codingcontest.entity.User;
 import com.harshit.codingcontest.exceptions.UserNotFoundException;
-import com.harshit.codingcontest.repositories.IUserRepository;
+import com.harshit.codingcontest.repositories.UserRepository;
+import com.harshit.codingcontest.repositoryService.UserRepositoryService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.stereotype.Service;
 
-import java.lang.constant.Constable;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -19,19 +18,19 @@ import java.util.stream.Collectors;
 public class UserService implements IUserService{
 
     @Autowired
-    private IUserRepository userRepository;
+    private UserRepositoryService userRepositoryService;
 
     @Override
     public List<User> findAllUsers() {
         List<User> users = null;
-        users = userRepository.findAll().stream().sorted(Comparator.comparingInt(User::getScore)).collect(Collectors.toList());
+        users = userRepositoryService.findAll().stream().sorted(Comparator.comparingInt(User::getScore)).collect(Collectors.toList());
         System.out.println(users);
         return users;
     }
 
     @Override
     public User findUserById(String id) throws UserNotFoundException{
-        Optional<User> optional = userRepository.findById(id);
+        Optional<User> optional = userRepositoryService.findById(id);
         if(!optional.isPresent()) throw new UserNotFoundException("User data not Found");
         return optional.get();
     }
@@ -39,18 +38,18 @@ public class UserService implements IUserService{
     @Override
     public User updateUserById(UpdateUserRequestDto userDto, String userId) {
         int score = userDto.getScore();
-        Optional<User> optional = userRepository.findById(userId);
+        Optional<User> optional = userRepositoryService.findById(userId);
         if(!optional.isPresent()) throw new UserNotFoundException("User data not Found");
         User user = optional.get();
         User updatedUser = new User(user.getId(), user.getUserName(), score);
-        return userRepository.save((updatedUser));
+        return userRepositoryService.save((updatedUser));
     }
 
     @Override
     public User createUser(UserRequestDto userDto) {
         User user = null;
         try{
-             user = userRepository.save(new User(userDto.getUserName()));
+             user = userRepositoryService.save(new User(userDto.getUserName()));
         }catch(Exception exception){
             return null;
         }
@@ -59,9 +58,9 @@ public class UserService implements IUserService{
 
     @Override
     public String deleteUserById (String id) {
-            Optional<User> optional = userRepository.findById(id);
+            Optional<User> optional = userRepositoryService.findById(id);
             if(!optional.isPresent()) throw new UserNotFoundException("User data not Found");
-            userRepository.delete(optional.get());
+        userRepositoryService.delete(optional.get());
             return "User deleted Successfully";
     }
 }
