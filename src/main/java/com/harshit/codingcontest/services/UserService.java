@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.stereotype.Service;
 
+import java.lang.constant.Constable;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -23,8 +24,7 @@ public class UserService implements IUserService{
     @Override
     public List<User> findAllUsers() {
         List<User> users = null;
-        //users = userRepository.findAll().stream().sorted(Comparator.comparingInt(User::getScore)).collect(Collectors.toList());
-        users = userRepository.findAll();
+        users = userRepository.findAll().stream().sorted(Comparator.comparingInt(User::getScore)).collect(Collectors.toList());
         System.out.println(users);
         return users;
     }
@@ -33,7 +33,6 @@ public class UserService implements IUserService{
     public User findUserById(String id) throws UserNotFoundException{
         Optional<User> optional = userRepository.findById(id);
         if(!optional.isPresent()) throw new UserNotFoundException("User data not Found");
-        System.out.println(optional.get().toString());
         return optional.get();
     }
 
@@ -44,7 +43,6 @@ public class UserService implements IUserService{
         if(!optional.isPresent()) throw new UserNotFoundException("User data not Found");
         User user = optional.get();
         User updatedUser = new User(user.getId(), user.getUserName(), score);
-        System.out.println(updatedUser.toString());
         return userRepository.save((updatedUser));
     }
 
@@ -60,14 +58,10 @@ public class UserService implements IUserService{
     }
 
     @Override
-    public String deleteUserById(String id) {
-       // try{
+    public String deleteUserById (String id) {
             Optional<User> optional = userRepository.findById(id);
             if(!optional.isPresent()) throw new UserNotFoundException("User data not Found");
             userRepository.delete(optional.get());
-        //}catch(Exception exception){
-
-        //}
-        return "User deleted Successfully";
+            return "User deleted Successfully";
     }
 }
